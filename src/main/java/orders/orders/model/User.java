@@ -3,9 +3,10 @@ package orders.orders.model;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import org.springframework.boot.context.properties.bind.DefaultValue;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -33,6 +34,9 @@ public class User {
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Order> orders = new ArrayList<>();
 
     public User() {
     }
@@ -82,5 +86,22 @@ public class User {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public List<Order> getOrders() {
+        return orders;
+    }
+
+    public void addOrder(Order order) {
+        order.setUser(this);
+        this.orders.add(order);
     }
 }

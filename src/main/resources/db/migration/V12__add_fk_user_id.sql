@@ -1,0 +1,8 @@
+ALTER TABLE orders
+    ADD user_id BIGINT;
+
+ALTER TABLE orders
+    ALTER COLUMN user_id SET NOT NULL;
+
+ALTER TABLE orders
+    ADD CONSTRAINT FK_ORDERS_ON_USER FOREIGN KEY (user_id) REFERENCES users (id);
