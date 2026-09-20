@@ -1,0 +1,18 @@
+### list orders
+GET http://localhost:8080/api/v1/orders?size=20&page=1&sort=id
+Content-Type: application/json
+
+
+### list orders with items
+GET http://localhost:8080/api/v1/orders/with-items?size=20&page=1&sort=id
+Content-Type: application/json
+
+
+### show order
+GET http://localhost:8080/api/v1/orders/1
+Content-Type: application/json
+
+
+### get orders by status
+GET http://localhost:8080/api/v1/orders/by-status/pending?page=2&size=13&sort=orderStatus,asc&sort=id,desc
+Content-Type: application/json
