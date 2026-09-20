@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/users")
@@ -22,6 +23,13 @@ public class UserController {
         List<User> users = this.userService.findAllUsers();
 
         return new ResponseEntity<>(users, HttpStatus.OK);
+    }
+
+    @GetMapping("{id}")
+    public ResponseEntity<User> getUserById(@PathVariable Long id) {
+        Optional<User> u = this.userService.findUserById(id);
+        return u.map(user -> new ResponseEntity<>(user, HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @PostMapping("")
