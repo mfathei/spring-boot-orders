@@ -1,0 +1,11 @@
+ALTER TABLE products
+    ALTER COLUMN price TYPE NUMERIC(10, 2);
+
+ALTER TABLE products
+    ALTER COLUMN quantity TYPE NUMERIC(10, 2);
+
+ALTER TABLE order_items
+    ALTER COLUMN price TYPE NUMERIC(10, 2);
+
+ALTER TABLE order_items
+    ALTER COLUMN quantity TYPE NUMERIC(10, 2);
