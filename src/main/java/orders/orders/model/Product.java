@@ -4,15 +4,15 @@ import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "products")
 public class Product {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "products_seq_gen")
+    @SequenceGenerator(name = "products_seq_gen", sequenceName = "products_seq", allocationSize = 50)
     private long id;
 
     @Column(nullable = false, unique = true)
@@ -21,11 +21,11 @@ public class Product {
     @Column(nullable = false)
     private String description;
 
-    @Column(nullable = false)
-    private double price;
+    @Column(nullable = false, precision = 10, scale = 2)
+    private BigDecimal price;
 
-    @Column(nullable = false)
-    private int quantity = 0;
+    @Column(nullable = false, precision = 10, scale = 2)
+    private BigDecimal quantity;
 
     @Column(nullable = false)
     private boolean enabled = true;
@@ -38,13 +38,10 @@ public class Product {
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<OrderItem> orderItems = new ArrayList<>();
-
     public Product() {
     }
 
-    public Product(long id, String name, String description, double price, int quantity) {
+    public Product(long id, String name, String description, BigDecimal price, BigDecimal quantity) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -76,19 +73,19 @@ public class Product {
         this.description = description;
     }
 
-    public double getPrice() {
+    public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(BigDecimal price) {
         this.price = price;
     }
 
-    public int getQuantity() {
+    public BigDecimal getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(int quantity) {
+    public void setQuantity(BigDecimal quantity) {
         this.quantity = quantity;
     }
 
@@ -116,12 +113,16 @@ public class Product {
         this.updatedAt = updatedAt;
     }
 
-    public List<OrderItem> getOrderItems() {
-        return orderItems;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Product product = (Product) o;
+        return id != 0 && id == product.id;
     }
 
-    public void addOrderItem(OrderItem orderItem) {
-        orderItem.setProduct(this);
-        this.orderItems.add(orderItem);
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
     }
 }

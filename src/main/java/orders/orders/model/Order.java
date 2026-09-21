@@ -1,6 +1,7 @@
 package orders.orders.model;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -12,7 +13,8 @@ import java.util.List;
 @Table(name = "orders")
 public class Order {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "orders_seq_gen")
+    @SequenceGenerator(name = "orders_seq_gen", sequenceName = "orders_seq", allocationSize = 50)
     private long id;
 
     @Column(name = "order_date", nullable = false)
@@ -31,6 +33,7 @@ public class Order {
     @Column(name = "updated_at",nullable = false, updatable = false)
     private LocalDateTime updatedAt;
 
+    @BatchSize(size = 25)
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<OrderItem> orderItems = new ArrayList<>();
 
@@ -103,11 +106,29 @@ public class Order {
         this.orderItems.add(orderItem);
     }
 
+    public void removeOrderItem(OrderItem orderItem) {
+        this.orderItems.remove(orderItem);
+        orderItem.setOrder(null);
+    }
+
     public User getUser() {
         return user;
     }
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Order order = (Order) o;
+        return id != 0 && id == order.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
     }
 }
