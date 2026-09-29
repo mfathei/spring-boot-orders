@@ -15,7 +15,7 @@ public class OrderItem {
     @SequenceGenerator(name = "order_items_seq_gen", sequenceName = "order_items_seq", allocationSize = 50)
     private long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal quantity;
 
     @Column(nullable = false, precision = 10, scale = 2)

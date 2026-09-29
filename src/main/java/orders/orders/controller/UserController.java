@@ -1,5 +1,8 @@
 package orders.orders.controller;
 
+import jakarta.validation.Valid;
+import orders.orders.dto.CreateUserRequest;
+import orders.orders.dto.UserResponse;
 import orders.orders.model.User;
 import orders.orders.service.UserService;
 import org.springframework.http.HttpStatus;
@@ -19,22 +22,29 @@ public class UserController {
     }
 
     @GetMapping("")
-    public ResponseEntity<List<User>> getAllUsers() {
-        List<User> users = this.userService.findAllUsers();
+    public ResponseEntity<List<UserResponse>> getAllUsers() {
+        List<UserResponse> users = this.userService.findAllUsers()
+                .stream().map(UserResponse::from).toList();
 
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<User> getUserById(@PathVariable Long id) {
+    public ResponseEntity<UserResponse> getUserById(@PathVariable Long id) {
         Optional<User> u = this.userService.findUserById(id);
-        return u.map(user -> new ResponseEntity<>(user, HttpStatus.OK))
+        return u.map(user -> new ResponseEntity<>(UserResponse.from(user), HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @PostMapping("")
-    public ResponseEntity<User> createUser(@RequestBody User user) {
+    public ResponseEntity<UserResponse> createUser(@Valid @RequestBody CreateUserRequest request) {
+        User user = new User();
+        user.setEmail(request.email());
+        user.setPassword(request.password());
+        user.setUsername(request.username());
+        user.setEnabled(request.enabled());
+
         User result = this.userService.createUser(user);
-        return new ResponseEntity<>(result, HttpStatus.CREATED);
+        return new ResponseEntity<>(UserResponse.from(result), HttpStatus.CREATED);
     }
 }
