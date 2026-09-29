@@ -14,7 +14,7 @@ Content-Type: application/json
 
 {
   "username": "mmahdy3",
-  "email": "mmahdy3@test.com",
-  "password": "P@ssw0rd",
+
+  "password": "",
   "enabled": false
 }
